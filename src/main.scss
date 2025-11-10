@@ -1,0 +1,52 @@
+*, *::before, *::after {
+}
+html {
+    
+}
+body {
+
+}
+
+.main-nav {
+    display: flex;
+    width: 100%;
+    height: auto;
+    flex: 1;
+    ul{
+        list-style: none;
+        margin:0;
+        padding:0;
+        display: flex;
+        gap:1rem;
+        flex-direction: row;
+       
+        li[data-subroute="true"]{
+            position: relative;
+            .sub-routes {
+                display: none;
+            }
+        }
+        li[data-subroute="true"]:hover, 
+        li[data-subroute="true"]:focus-within, 
+        li[data-subroute="true"]:active {
+            .sub-routes-container {
+                position: absolute;
+                margin: 0;
+                padding: 0;
+                height: auto;
+                padding-top: .5rem;
+                width: fit-content;
+            }
+            .sub-routes {
+                display: flex;
+                flex-direction: column;
+                background-color: white;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                border-radius: 4px;
+                list-style: none;
+                width: max-content;
+                padding: 5px 10px;
+            }
+        }
+    }
+}

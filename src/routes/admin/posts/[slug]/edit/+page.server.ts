@@ -1,63 +1,51 @@
 export const ssr = false;
-import { renderHtml } from "$lib";
 import slug from "slug";
 import type { Actions, PageServerLoad } from "../$types";
-import type { BlogPost } from "../../../../../app";
-import { error } from "@sveltejs/kit";
+import type { BlogPost, PostWithMetadata } from "../../../../../app";
+import { error, redirect } from "@sveltejs/kit";
+import { editPost, getPostBySlug } from "$lib/api/blog";
+
 export const load: PageServerLoad = async ({ params, url }) => {
-    console.log('Admin Post Load Params:', params);
-    console.log('Admin Post Load URL:', url);
     let { slug } = params as { slug: string };
-    console.log('Post Slug:', slug);
-    let response = await fetch(`${url.origin}/api/post/${slug}`);
-    if (response.status === 404) {
+    let response = await getPostBySlug(slug);
+    if (!response.success || !response.post) {
         throw error(404, 'Nicht gefunden');
     }
-    let responseData = await response.json() as BlogPost;
-    console.log('Loaded Post:', responseData.post.html);
-
-    if (!responseData.post) throw error(404, 'Nicht gefunden');
-    //convert date to valid html date
-
-    return {
-        post: responseData.post.html,
+    const post = response.post[0];
+    let postWithMeta: PostWithMetadata | undefined = {
+        post: post.html as string,
         metadata: {
-            title: responseData.post.title,
-            createdAt: new Date(responseData.post.createdAt).toISOString(),
-            updatedAt: new Date(responseData.post.updatedAt).toISOString(),
-            slug: slug
+            title: post.title as string,
+            createdAt: new Date(post.createdAt).toISOString(),
+            updatedAt: new Date(post.updatedAt).toISOString(),
+            slug: post.slug as string
         }
+    };
+    return {
+        post: postWithMeta
     };
 }
 
 export const actions: Actions = {
     updatePost: async ({ request, url }) => {
         const formData = await request.formData();
-        console.log('Received form data for create post', formData);
-        const editor = Object.fromEntries(formData);
-        console.log('Editor:', editor);
+        const html = formData.get('html') as string;
+        const title = formData.get('title') as string;
+        const org_slug = formData.get('slug') as string;
+        const new_slug = slug(title, { lower: true })
         const post = {
-            title: editor.title,
-            slug: slug(editor.title as string, { lower: true }),
-            html: editor.html,
-            markdown: editor.markdown,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
+            title: title,
+            slug: new_slug,
+            html: html,
             authorId: '37b8ab71-6646-4138-ae5c-467518c58a86' // Replace with actual author ID
         }
 
         // write to database
-        const response = await fetch(`${url.origin}/api/post`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(post)
-        })
-        if (response.status === 201) {
-            return { success: true };
+        const response = await editPost(org_slug, post);
+        if (response.success && response.post) {
+            redirect(303, `/admin/posts/${post.slug}`);
         } else {
-            return { success: false, error: 'Failed to create post' };
+            return { success: false, error: response.error };
         }
     }
 }

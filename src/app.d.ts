@@ -21,9 +21,18 @@ declare global {
 			username: string;
 			email: string;
 			createdAt: number;
-			updatedAt: number;	
+			updatedAt: number;
+		}
+		interface PostWithMetadata {
+			post: string;
+			metadata: {
+				title: string;
+				createdAt: Date;
+				updatedAt: Date;
+				slug: string;
+			}
 		}
 	}
 }
 
-export { BlogPost, User };
+export { BlogPost, User, PostWithMetadata };

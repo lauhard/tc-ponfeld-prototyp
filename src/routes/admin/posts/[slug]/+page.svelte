@@ -1,17 +1,16 @@
 <script lang="ts">
-    import type { BlogPost } from "../../../../app";
+    import type { PostWithMetadata } from "../../../../app";
 
-  let { data }: { data: { post: BlogPost, metadata: { title: string; createdAt: string; updatedAt: string; slug: string} } } = $props();
-  
+  let { data }: { data: { post: PostWithMetadata } } = $props();
 </script>
 
 <article class="prose">
-  <h1>{data.post.title}</h1>
-  <li><a href="/admin/posts/{data.metadata.slug}/edit">Edit Post</a></li>
+  <h1>{data.post.metadata.title}</h1>
+  <li><a href="/admin/posts/{data.post.metadata.slug}/edit">Edit Post</a></li>
 
-  <div class="meta">{new Date(data.metadata.createdAt).toLocaleString()}</div>
+  <div class="meta">{new Date(data.post.metadata.createdAt).toLocaleString()}</div>
   <div class="content">
-    {@html data.post}
+    {@html data.post.post}
   </div> 
 </article>
 

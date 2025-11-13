@@ -1,28 +1,26 @@
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "../$types";
-import type { BlogPost } from "../../../../app";
+import { getPostBySlug } from "$lib/api/blog";
+import type { PostWithMetadata } from "../../../../app";
 
 export const load: PageServerLoad = async ({ params, url }) => {
-  // TDOD: user auth 
-
-  let { slug } = params as { slug: string };
-  let response = await fetch(`${url.origin}/api/post/${slug}`);
-  if (response.status === 404) {
-    throw error(404, 'Nicht gefunden');
-  }
-  let responseData = await response.json() as BlogPost;
-  console.log('Loaded Post:', responseData.post.html);
-
-  //if (!responseData.post) throw error(404, 'Nicht gefunden');
-  //convert date to valid html date
-
-  return {
-    post: responseData.post.html,
-    metadata: {
-      title: responseData.post.title,
-      createdAt: new Date(responseData.post.createdAt).toISOString(),
-      updatedAt: new Date(responseData.post.updatedAt).toISOString(),
-      slug: slug
+    // TODO: user auth 
+    let { slug } = params as { slug: string };
+    let response = await getPostBySlug(slug);
+    if (!response.success || !response.post) {
+        throw error(404, 'Nicht gefunden');
     }
-  };
+    let post = response.post[0];
+        let postWithMeta: PostWithMetadata | undefined = {
+        post: post.html as string,
+        metadata: {
+            title: post.title as string,
+            createdAt: new Date(post.createdAt).toISOString(),
+            updatedAt: new Date(post.updatedAt).toISOString(),
+            slug: post.slug as string
+        }
+    };
+    return {
+        post: postWithMeta
+    };
 };

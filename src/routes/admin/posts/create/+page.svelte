@@ -5,6 +5,7 @@
     import "quill/dist/quill.snow.css";
     import { browser } from "$app/environment";
     import { enhance } from "$app/forms";
+    import type { ActionData, PageData } from "../$types";
 
     let title = $state("Tennisturnier 2025");
     let html = $state<string>("");
@@ -13,6 +14,8 @@
     let quill: Quill;
     let editorEl!: HTMLDivElement;
     let sanitize = $state<(s: string) => string>((s) => s);
+
+    let { form, data }:{ form: ActionData, data: PageData } = $props();
 
     // live refresh
     function refresh() {
@@ -89,11 +92,15 @@
     <input placeholder="" bind:value={urlInput} type="url" required />
     <button type="submit">Bild per URL einfügen</button>
 </form>
-
+    {#if form?.success === false && form?.error}
+        <div class="alert alert-danger">
+            {form.error}
+        </div>
+    {/if}
     <form action="?/createPost" method="POST" use:enhance>
-        <div id="editor" bind:this={editorEl} class="editor"></div>
-
+        <label for="title">Post Name</label>
         <input name="title" type="text" bind:value={title} placeholder="Post Title" required />
+        <div id="editor" bind:this={editorEl} class="editor"></div>
         <input name="html" type="hidden" bind:value={html} />
         <button type="submit">Create Post</button>
     </form>

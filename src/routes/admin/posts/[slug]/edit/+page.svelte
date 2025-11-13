@@ -5,11 +5,12 @@
     import "quill/dist/quill.snow.css";
     import { browser } from "$app/environment";
     import { enhance } from "$app/forms";
-    import type { BlogPost } from "../../../../../app";
+    import type { BlogPost, PostWithMetadata } from "../../../../../app";
+    import type { ActionData } from "./$types";
 
-    let { data }: { data: { post: BlogPost, metadata: { title: string; createdAt: string; updatedAt: string, slug: string } } } = $props();
+    let { data, form }: { data: { post: PostWithMetadata }, form: ActionData } = $props();
 
-    let title = $state("Tennisturnier 2025");
+    let title = $state(data.post.metadata.title);
     let html = $state<string>("");
     let urlInput = $state("https://picsum.photos/200/300");
 
@@ -32,7 +33,7 @@
                         [{ header: [1, 2, 3, false] }],
                         ["bold", "italic", "underline", "strike"],
                         [{ list: "ordered" }, { list: "bullet" }],
-                        ["link", "code-block"], // removed "image"
+                        ["link", "image", "code-block"], // removed "image"
                         ["clean"],
                     ],
                 },
@@ -41,11 +42,12 @@
 
             // Change Toolbar Image-Handler:
             const toolbar = quill.getModule("toolbar");
-            //toolbar.addHandler("image", () => {
-            //	const url = prompt("Bild-URL einfügen (https://...)");
-            //	if (url) insertImgByUrl(url);
+            //toolbar.addHandler("image", (event) => {
+            //    console.log("Custom image handler triggered", event);
+            //    
+            //	
             //});
-            quill.root.innerHTML = data.post;
+            quill.root.innerHTML = data.post.post;
             refresh();
             quill.on("text-change", refresh);
         }
@@ -60,11 +62,9 @@
         const index = quill.getSelection(true)?.index ?? quill.getLength();
         quill.insertEmbed(index, "image", url, "user"); // ergibt <img src="url">
         quill.setSelection(index + 1);
-
         // optionale Attribute setzen (dank erweitertem Blot)
         if (opts.alt) quill.formatText(index, 1, "alt", opts.alt);
         quill.formatText(index, 1, "loading", opts.loading ?? "lazy");
-
         refresh();
     }
 
@@ -88,18 +88,20 @@
 
 <h1>Edit Post</h1>
 
-<!-- einfache URL-Eingabe: fügt ein <img src="..."> ohne base64 ein -->
 <form onsubmit={insertFromInput} class="url-insert">
     <input placeholder="" bind:value={urlInput} type="url" required />
     <button type="submit">Bild per URL einfügen</button>
 </form>
-
-    <form action="?/createPost" method="POST" use:enhance>
+    {#if form?.success === false}
+        <p class="error">Error: {form.error}</p>
+    {/if}
+    <form action="?/updatePost" method="POST" use:enhance>
+        <label for="title">Post Name</label>
+        <input name="title" type="text" bind:value={title} placeholder="blog post name" required />
         <div id="editor" bind:this={editorEl} class="editor"></div>
-
-        <input name="title" type="text" bind:value={title} placeholder="Post Title" required />
+        <input type="hidden" name="slug" value={data.post.metadata.slug} />
         <input name="html" type="hidden" bind:value={html} />
-        <button type="submit">Create Post</button>
+        <button type="submit">Edit Post</button>
     </form>
 
 <section class="preview">

@@ -6,6 +6,7 @@
     import { browser } from "$app/environment";
     import { enhance } from "$app/forms";
     import type { ActionData, PageData } from "../$types";
+    import { getUserState } from "$lib/state/user.svelte";
 
     let title = $state("Tennisturnier 2025");
     let html = $state<string>("");
@@ -16,6 +17,7 @@
     let sanitize = $state<(s: string) => string>((s) => s);
 
     let { form, data }:{ form: ActionData, data: PageData } = $props();
+    let user = getUserState();
 
     // live refresh
     function refresh() {
@@ -102,6 +104,7 @@
         <input name="title" type="text" bind:value={title} placeholder="Post Title" required />
         <div id="editor" bind:this={editorEl} class="editor"></div>
         <input name="html" type="hidden" bind:value={html} />
+        <input name="authorId" type="hidden" value={user?.id} />
         <button type="submit">Create Post</button>
     </form>
 

@@ -6,10 +6,8 @@
     import { goto, invalidateAll } from "$app/navigation";
 
     let { form }: { form: ActionData } = $props();
-    let name = $state<string>("");
     let email = $state<string>("");
     let password = $state<string>("");
-    let isAdmin = $state<boolean>(false);
     let betterAuthError = $state<string | null>(null);
 
     const submitFunction: SubmitFunction = (event) => {
@@ -17,15 +15,13 @@
             await applyAction(result);
             if (result.type === "success" && result.data?.success === true) {
                 // handle successful signup, e.g., redirect or show a message
-                await authClient.signUp.email({
-                    name,
+                await authClient.signIn.email({
                     password,
                     email,
-                    isAdmin
                 },{
                     onSuccess: async (data) => {
                         await invalidateAll();
-                        goto("");
+                        goto("/admin");
                     },
                     onError: async (error) => {
                         betterAuthError = error instanceof Error ? error.error.code : String(error.error.code);
@@ -36,7 +32,7 @@
     };
 </script>
 
-<h1>Signup</h1>
+<h1>Login</h1>
 {#if form?.errors}
     {@render error(form?.message)}
 {/if}
@@ -44,17 +40,8 @@
     {@render error(betterAuthError)}
 {/if}
 
-<form action="?/signup" use:enhance={submitFunction} method="POST">
+<form action="?/login" use:enhance={submitFunction} method="POST">
     <fieldset>
-        <label for="name">Name</label>
-        <input
-            type="text"
-            bind:value={name}
-            name="name"
-            id="name"
-            required
-        />
-        {@render fromError(form?.errors, "name")}   
         <label for="email">email</label>
         <input
             type="email"
@@ -69,20 +56,12 @@
             type="password"
             bind:value={password}
             name="password"
-            id="password"
-            autocomplete="new-password"
+            id="login_password"
+            autocomplete="current-password"
             required
         />
         {@render fromError(form?.errors, "password")}   
-        <label for="is_admin">Is Admin</label>
-        <input
-            type="checkbox"
-            bind:checked={isAdmin}
-            name="is_admin"
-            id="is_admin"
-        />
-        {@render fromError(form?.errors, "is_admin")}
-        <button type="submit">Sign Up</button>
+        <button type="submit">Login</button>
     </fieldset>
 </form>
 

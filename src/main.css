@@ -2,6 +2,7 @@
   display: flex;
   width: 100%;
   height: auto;
+  justify-content: space-between;
   flex: 1;
 }
 .main-nav ul {
@@ -11,28 +12,30 @@
   display: flex;
   gap: 1rem;
   flex-direction: row;
+  width: -moz-fit-content;
+  width: fit-content;
 }
-.main-nav ul li[data-subroute=true] {
+.main-nav ul li[data-subroute="admin=true"],
+.main-nav ul li[data-subroute="posts=true"],
+.main-nav ul li[data-subroute="user=true"] {
   position: relative;
 }
-.main-nav ul li[data-subroute=true] .sub-routes {
+.main-nav ul li[data-subroute="admin=true"] .sub-routes-container,
+.main-nav ul li[data-subroute="posts=true"] .sub-routes-container,
+.main-nav ul li[data-subroute="user=true"] .sub-routes-container {
   display: none;
-}
-.main-nav ul li[data-subroute=true]:hover .sub-routes-container,
-.main-nav ul li[data-subroute=true]:focus-within .sub-routes-container,
-.main-nav ul li[data-subroute=true]:active .sub-routes-container {
   position: absolute;
-  margin: 0;
+  margin-left: 0px;
   padding: 0;
   height: auto;
   padding-top: 0.5rem;
   width: -moz-fit-content;
   width: fit-content;
 }
-.main-nav ul li[data-subroute=true]:hover .sub-routes,
-.main-nav ul li[data-subroute=true]:focus-within .sub-routes,
-.main-nav ul li[data-subroute=true]:active .sub-routes {
-  display: flex;
+.main-nav ul li[data-subroute="admin=true"] .sub-routes,
+.main-nav ul li[data-subroute="posts=true"] .sub-routes,
+.main-nav ul li[data-subroute="user=true"] .sub-routes {
+  display: none;
   flex-direction: column;
   background-color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -41,4 +44,30 @@
   width: -moz-max-content;
   width: max-content;
   padding: 5px 10px;
+}
+.main-nav ul li[data-subroute="admin=true"]:hover .sub-routes-container {
+  display: block;
+}
+.main-nav ul li[data-subroute="admin=true"]:hover .sub-routes-admin {
+  display: flex;
+}
+.main-nav ul li[data-subroute="posts=true"]:hover .sub-routes-container {
+  display: block;
+  top: -10px;
+  left: 100%;
+}
+.main-nav ul li[data-subroute="posts=true"]:hover .sub-routes-posts {
+  display: flex;
+  justify-self: end;
+  margin-left: 10px;
+}
+.main-nav ul li[data-subroute="user=true"]:hover .sub-routes-container {
+  display: block;
+  top: -10px;
+  left: 100%;
+}
+.main-nav ul li[data-subroute="user=true"]:hover .sub-routes-user {
+  display: flex;
+  justify-self: end;
+  margin-left: 10px;
 }/*# sourceMappingURL=main.css.map */

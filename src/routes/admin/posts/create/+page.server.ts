@@ -3,7 +3,8 @@ import slug from "slug";
 import type { Actions, PageServerLoad } from "../$types";
 import { redirect } from "@sveltejs/kit";
 import { createPost } from "$lib/api/blog";
-export const load:PageServerLoad = async ()=>{
+export const load:PageServerLoad = async ({ locals })=>{
+    
 }
 
 export const actions: Actions =  {
@@ -11,6 +12,7 @@ export const actions: Actions =  {
         const formData = await request.formData();
         const html = formData.get('html') as string;
         const title = formData.get('title') as string;
+        const authorId = formData.get('authorId') as string;
         const _slug = slug(title, { lower: true });
         const post = {
             title: title,
@@ -19,7 +21,7 @@ export const actions: Actions =  {
             markdown: null,
             createdAt: Date.now(),
             updatedAt: Date.now(),
-            authorId: '37b8ab71-6646-4138-ae5c-467518c58a86' // Replace with actual author ID
+            authorId: authorId
         }
         
         // write to database

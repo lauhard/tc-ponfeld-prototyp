@@ -37,7 +37,6 @@ export const actions: Actions = {
             title: title,
             slug: new_slug,
             html: html,
-            authorId: '37b8ab71-6646-4138-ae5c-467518c58a86' // Replace with actual author ID
         }
 
         // write to database

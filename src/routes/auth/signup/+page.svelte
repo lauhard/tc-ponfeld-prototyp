@@ -9,7 +9,6 @@
     let name = $state<string>("");
     let email = $state<string>("");
     let password = $state<string>("");
-    let isAdmin = $state<boolean>(false);
     let betterAuthError = $state<string | null>(null);
 
     const submitFunction: SubmitFunction = (event) => {
@@ -21,11 +20,10 @@
                     name,
                     password,
                     email,
-                    isAdmin
                 },{
                     onSuccess: async (data) => {
                         await invalidateAll();
-                        goto("");
+                        goto("/");
                     },
                     onError: async (error) => {
                         betterAuthError = error instanceof Error ? error.error.code : String(error.error.code);
@@ -74,14 +72,6 @@
             required
         />
         {@render fromError(form?.errors, "password")}   
-        <label for="is_admin">Is Admin</label>
-        <input
-            type="checkbox"
-            bind:checked={isAdmin}
-            name="is_admin"
-            id="is_admin"
-        />
-        {@render fromError(form?.errors, "is_admin")}
         <button type="submit">Sign Up</button>
     </fieldset>
 </form>

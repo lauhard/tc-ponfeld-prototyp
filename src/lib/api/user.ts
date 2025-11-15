@@ -1,19 +1,19 @@
 import { db } from "$lib/server/db";
 import { user } from "$lib/server/db/schema";
-import type { User } from "../../app";
+import type { User } from "better-auth";
 
-export const createUser = async (userData: User): Promise<{ success: boolean, newUser?: User, error?:string }> => {
-    try{
-        const newUser: User[] = await db.insert(user).values(userData).returning();
+export const getUser = async (): Promise<{ success: boolean, users?: User[], error?:string }> => {
+    try {
+        const result: User[] = await db.select().from(user);
         return {
             "success": true,
-            "newUser": newUser[0]
+            "users": result
         };
-    } catch(e: any) {
+    } catch (e: any) {
         return {
             "success": false,
-            "error": e instanceof Error ? e.message : "Error creating user"
-        }
+            "error": e instanceof Error ? e.message : "Error fetching user"
+        };
     }
 };
 

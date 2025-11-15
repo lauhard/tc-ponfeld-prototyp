@@ -11,6 +11,8 @@ body {
     display: flex;
     width: 100%;
     height: auto;
+    justify-content: space-between;
+
     flex: 1;
     ul{
         list-style: none;
@@ -19,26 +21,25 @@ body {
         display: flex;
         gap:1rem;
         flex-direction: row;
+        width: fit-content;
        
-        li[data-subroute="true"]{
+        li[data-subroute="admin=true"],
+        li[data-subroute="posts=true"],
+        li[data-subroute="user=true"]
+        {
             position: relative;
-            .sub-routes {
+            .sub-routes-container
+            {
                 display: none;
-            }
-        }
-        li[data-subroute="true"]:hover, 
-        li[data-subroute="true"]:focus-within, 
-        li[data-subroute="true"]:active {
-            .sub-routes-container {
                 position: absolute;
-                margin: 0;
+                margin-left: 0px;
                 padding: 0;
                 height: auto;
                 padding-top: .5rem;
                 width: fit-content;
             }
             .sub-routes {
-                display: flex;
+                display: none;
                 flex-direction: column;
                 background-color: white;
                 box-shadow: 0 4px 8px rgba(0,0,0,0.1);
@@ -46,6 +47,49 @@ body {
                 list-style: none;
                 width: max-content;
                 padding: 5px 10px;
+            }
+        }
+        li[data-subroute="admin=true"]:hover
+        {
+            .sub-routes-container
+            {
+                display: block;
+                
+            }
+            .sub-routes-admin
+            {
+                display: flex;
+                
+            }
+        }
+        li[data-subroute="posts=true"]:hover
+        {
+            .sub-routes-container
+            {
+                display: block;
+                top:-10px;
+                left:100%;
+            }
+            .sub-routes-posts
+            {
+                display: flex;
+                justify-self: end;
+                margin-left: 10px;
+            }
+        }
+        li[data-subroute="user=true"]:hover
+        {
+            .sub-routes-container
+            {
+                display: block;
+                top:-10px;
+                left:100%;
+            }
+            .sub-routes-user
+            {
+                display: flex;
+                justify-self: end;
+                margin-left: 10px;
             }
         }
     }

@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1763068238670,
+      "tag": "0000_charming_black_bird",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1763068339506,
+      "tag": "0001_yellow_william_stryker",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1763068565906,
+      "tag": "0002_natural_scorpion",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1763068624613,
+      "tag": "0003_worried_molly_hayes",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1763068865020,
+      "tag": "0004_wooden_psylocke",
+      "breakpoints": true
+    }
+  ]
+}

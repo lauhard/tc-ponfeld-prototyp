@@ -1,9 +1,10 @@
+import type { Actions } from "@sveltejs/kit";
+import type { PageServerLoad } from "./$types";
 import { signupSchema } from "$lib/schema/auth";
 import z from "zod";
-import type { Actions, PageServerLoad } from "./$types";
 
-export const load:PageServerLoad = async ({locals})=>{
-   
+export const load: PageServerLoad = async ({ request, locals, params }) => {
+    return {};
 }
 
 export const actions: Actions = {
@@ -12,13 +13,9 @@ export const actions: Actions = {
         const name = formData.get("name")?.toString() ?? "";
         const email = formData.get("email")?.toString() ?? "";
         const password = formData.get("password")?.toString() ?? "";
-        const isAdmin = formData.get("is_admin")?.toString() === 'on' ? true : false;
-        console.log("isAdmin value from formData:", formData.get("is_admin"));
         // Validate input;
         const result = await signupSchema.safeParseAsync({ name, email, password });
-        console.log("Signup validation result:", (result.error?.issues));
         if (!result.success) {
-        console.log( (z.treeifyError(result.error)?.properties)?.["name"]?.errors[0])
             return {
                 success: false,
                 message: 'Validation failed',
